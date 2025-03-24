@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   TextField,
   Button,
   Typography,
   Box,
   CircularProgress,
-  Snackbar,
-  Alert,
   Paper,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
 } from "@mui/material";
 import OAuth from "../components/OAuth";
 
@@ -17,13 +20,20 @@ export default function SignUp() {
     username: "",
     email: "",
     password: "",
+    role: "cashier", // Default to cashier
   });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Separate onChange for text inputs
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // Separate onChange for Select input (Fix applied)
+  const handleRoleChange = (e: SelectChangeEvent<string>) => {
+    setFormData({ ...formData, role: e.target.value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,7 +88,7 @@ export default function SignUp() {
             label="Username"
             variant="outlined"
             id="username"
-            onChange={handleChange}
+            onChange={handleTextChange}
             fullWidth
             required
           />
@@ -87,7 +97,7 @@ export default function SignUp() {
             type="email"
             variant="outlined"
             id="email"
-            onChange={handleChange}
+            onChange={handleTextChange}
             fullWidth
             required
           />
@@ -96,10 +106,20 @@ export default function SignUp() {
             type="password"
             variant="outlined"
             id="password"
-            onChange={handleChange}
+            onChange={handleTextChange}
             fullWidth
             required
           />
+
+          {/* Role Selection */}
+          <FormControl fullWidth>
+            <InputLabel>Role</InputLabel>
+            <Select value={formData.role} onChange={handleRoleChange}>
+              <MenuItem value="owner">Owner</MenuItem>
+              <MenuItem value="cashier">Cashier</MenuItem>
+            </Select>
+          </FormControl>
+
           <Button
             type="submit"
             variant="contained"
@@ -107,7 +127,6 @@ export default function SignUp() {
             fullWidth
             size="large"
             disabled={loading}
-            sx={{ mt: 2, py: 1.5, borderRadius: 2, fontWeight: "bold" }}
           >
             {loading ? (
               <CircularProgress size={24} color="inherit" />
@@ -117,26 +136,7 @@ export default function SignUp() {
           </Button>
           <OAuth />
         </form>
-        <Box display="flex" justifyContent="center" alignItems="center" mt={3}>
-          <Typography>Already have an account?</Typography>
-          <Link to="/sign-in" style={{ textDecoration: "none", marginLeft: 5 }}>
-            <Typography color="primary" fontWeight="bold">
-              Sign In
-            </Typography>
-          </Link>
-        </Box>
       </Paper>
-
-      {/* Error Snackbar */}
-      <Snackbar
-        open={!!error}
-        autoHideDuration={4000}
-        onClose={() => setError(null)}
-      >
-        <Alert severity="error" onClose={() => setError(null)}>
-          {error}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 }

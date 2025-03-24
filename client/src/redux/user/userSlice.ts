@@ -1,9 +1,25 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState = {
+// Define the structure of a user
+interface UserType {
+  _id: string;
+  username: string;
+  email: string;
+  avatar: string;
+  role: "owner" | "cashier"; // Define role explicitly
+}
+
+// Define the structure of the Redux state
+interface UserState {
+  currentUser: UserType | null;
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: UserState = {
   currentUser: null,
-  error: null,
   loading: false,
+  error: null,
 };
 
 const userSlice = createSlice({
@@ -13,24 +29,24 @@ const userSlice = createSlice({
     signInStart: (state) => {
       state.loading = true;
     },
-    signInSuccess: (state, action) => {
+    signInSuccess: (state, action: PayloadAction<UserType>) => {
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
     },
-    signInFailure: (state, action) => {
+    signInFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
     updateUserStart: (state) => {
       state.loading = true;
     },
-    updateUserSuccess: (state, action) => {
+    updateUserSuccess: (state, action: PayloadAction<UserType>) => {
       state.currentUser = action.payload;
       state.loading = false;
       state.error = null;
     },
-    updateUserFailure: (state, action) => {
+    updateUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
@@ -42,7 +58,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    deleteUserFailure: (state, action) => {
+    deleteUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },
@@ -54,7 +70,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    signOutUserFailure: (state, action) => {
+    signOutUserFailure: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
       state.loading = false;
     },

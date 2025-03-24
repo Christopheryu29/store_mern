@@ -28,7 +28,13 @@ import {
   Alert,
   Grid,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material";
+
 import { UploadFile, CheckCircle } from "@mui/icons-material";
 
 interface User {
@@ -36,12 +42,7 @@ interface User {
   username: string;
   email: string;
   avatar: string;
-}
-
-interface Listing {
-  _id: string;
-  name: string;
-  imageUrls: string[];
+  role: string; // Added role field
 }
 
 export default function Profile() {
@@ -60,8 +61,6 @@ export default function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState<Partial<User>>({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [showListingsError, setShowListingsError] = useState(false);
-  const [userListings, setUserListings] = useState<Listing[]>([]);
 
   useEffect(() => {
     if (file) {
@@ -95,6 +94,10 @@ export default function Profile() {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleRoleChange = (e: SelectChangeEvent<string>) => {
+    setFormData((prev) => ({ ...prev, role: e.target.value }));
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -143,26 +146,9 @@ export default function Profile() {
     try {
       dispatch(signOutUserStart());
       await fetch("/api/auth/signout");
-      dispatch(deleteUserSuccess()); // Fixed by removing `null`
+      dispatch(deleteUserSuccess());
     } catch (error) {
       dispatch(deleteUserFailure((error as Error).message));
-    }
-  };
-
-  const handleShowListings = async () => {
-    if (!currentUser) return;
-
-    try {
-      setShowListingsError(false);
-      const res = await fetch(`/api/user/listings/${currentUser._id}`);
-      const data = await res.json();
-      if (!data.success) {
-        setShowListingsError(true);
-        return;
-      }
-      setUserListings(data);
-    } catch {
-      setShowListingsError(true);
     }
   };
 
@@ -227,14 +213,19 @@ export default function Profile() {
           margin="normal"
           onChange={handleChange}
         />
-        <TextField
-          id="password"
-          label="Password"
-          type="password"
-          fullWidth
-          margin="normal"
-          onChange={handleChange}
-        />
+
+        {/* Role Display and Update (Only Owners Can Change) */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Role</InputLabel>
+          <Select
+            value={formData.role || currentUser.role}
+            onChange={handleRoleChange}
+            disabled={currentUser.role !== "owner"} // Only owners can change
+          >
+            <MenuItem value="owner">Owner</MenuItem>
+            <MenuItem value="cashier">Cashier</MenuItem>
+          </Select>
+        </FormControl>
 
         <Button
           type="submit"
@@ -265,19 +256,6 @@ export default function Profile() {
         <Alert severity="success" icon={<CheckCircle />} sx={{ mt: 2 }}>
           Profile updated successfully!
         </Alert>
-      )}
-
-      <Button
-        fullWidth
-        variant="outlined"
-        color="primary"
-        sx={{ mt: 2 }}
-        onClick={handleShowListings}
-      >
-        Show Listings
-      </Button>
-      {showListingsError && (
-        <Alert severity="error">Error fetching listings</Alert>
       )}
     </Container>
   );

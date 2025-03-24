@@ -21,10 +21,10 @@ import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
-    username: "",
     email: "",
     password: "",
   });
+
   const { loading, error } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -43,12 +43,19 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
+
       if (data.success === false) {
         dispatch(signInFailure(data.message));
         return;
       }
-      dispatch(signInSuccess(data));
-      navigate("/");
+
+      dispatch(signInSuccess(data)); // Now includes role
+
+      if (data.role === "owner") {
+        navigate("/owner-dashboard");
+      } else {
+        navigate("/cashier-dashboard");
+      }
     } catch (error) {
       dispatch(signInFailure((error as Error).message));
     }
@@ -96,6 +103,7 @@ export default function SignIn() {
             fullWidth
             required
           />
+
           <Button
             type="submit"
             variant="contained"
@@ -113,8 +121,9 @@ export default function SignIn() {
           </Button>
           <OAuth />
         </form>
+
         <Box display="flex" justifyContent="center" alignItems="center" mt={3}>
-          <Typography>Dont have an account?</Typography>
+          <Typography>Don't have an account?</Typography>
           <Link to="/sign-up" style={{ textDecoration: "none", marginLeft: 5 }}>
             <Typography color="primary" fontWeight="bold">
               Sign Up

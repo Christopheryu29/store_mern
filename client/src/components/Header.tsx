@@ -8,6 +8,7 @@ import {
   Container,
   Avatar,
   Link as MuiLink,
+  Button,
 } from "@mui/material";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -21,6 +22,7 @@ interface UserType {
   name: string;
   email: string;
   avatar: string;
+  role: "owner" | "cashier"; // ✅ Role is explicitly defined
 }
 
 export default function Header() {
@@ -38,7 +40,7 @@ export default function Header() {
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
     }
-  }, [location.search]); // ✅ Fix: No direct access to window.location.search
+  }, [location.search]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,22 +151,36 @@ export default function Header() {
               About
             </MuiLink>
 
+            {/* Owner Dashboard (Only visible if user is an owner) */}
+            {currentUser?.role === "owner" && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => navigate("/owner-dashboard")}
+                sx={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  backgroundColor: "#90CAF9",
+                  "&:hover": { backgroundColor: "#64B5F6" },
+                }}
+              >
+                Owner Dashboard
+              </Button>
+            )}
+
             {/* Profile Section */}
-            <MuiLink
-              component={Link}
-              to="/profile"
-              sx={{ textDecoration: "none" }}
-            >
+            <IconButton onClick={() => navigate("/profile")} sx={{ p: 0 }}>
               {currentUser ? (
                 <Avatar
                   src={currentUser?.avatar}
                   alt="profile"
                   sx={{
-                    width: 30,
-                    height: 30,
+                    width: 32,
+                    height: 32,
                     border: "2px solid #90CAF9",
                     transition: "0.3s",
                     "&:hover": { transform: "scale(1.1)" },
+                    cursor: "pointer",
                   }}
                 />
               ) : (
@@ -173,7 +189,7 @@ export default function Header() {
                     color: "white",
                     fontSize: "14px",
                     fontWeight: "500",
-                    padding: "3px 8px",
+                    padding: "6px 12px",
                     borderRadius: "10px",
                     border: "1.5px solid #90CAF9",
                     transition: "0.3s",
@@ -181,12 +197,13 @@ export default function Header() {
                       backgroundColor: "#90CAF9",
                       color: "#181818",
                     },
+                    cursor: "pointer",
                   }}
                 >
                   Sign in
                 </Typography>
               )}
-            </MuiLink>
+            </IconButton>
           </Box>
         </Toolbar>
       </Container>

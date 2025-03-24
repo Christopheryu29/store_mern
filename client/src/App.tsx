@@ -7,6 +7,14 @@ import About from "./pages/About";
 import Header from "./components/Header";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./pages/Profile";
+import PrivateOwnerRoute from "./pages/PrivateOwnerRoute";
+import OwnerDashboard from "./pages/OwnerDashboard";
+import InventoryPage from "./pages/InventoryPage";
+import SalesPage from "./pages/SalesPage";
+import StaffPage from "./pages/StaffPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import InvoicePage from "./pages/InvoicePage";
+import FinancialSummaryPage from "./pages/FinancialSummaryPage";
 
 export default function App() {
   return (
@@ -20,6 +28,15 @@ export default function App() {
 
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route element={<PrivateOwnerRoute />}>
+          <Route path="/owner-dashboard" element={<OwnerDashboard />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/sales" element={<SalesPage />} />
+          <Route path="/staff" element={<StaffPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/invoice" element={<InvoicePage />} />
+          <Route path="/financial-summary" element={<FinancialSummaryPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
