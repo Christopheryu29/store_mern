@@ -67,6 +67,18 @@ export default function OwnerDashboard() {
           >
             Owner Summary
           </Button>
+          <Button variant="contained" onClick={() => navigate("/activity-log")}>
+            View Activity Log
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate("/refund-history")}
+          >
+            View Refunds
+          </Button>
+
+          <Button onClick={() => navigate("/refund")}>Issue Refund</Button>
         </Box>
       </Box>
     </Container>

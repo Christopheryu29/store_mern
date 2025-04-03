@@ -1,5 +1,6 @@
 import Item from "../models/item.model.js";
 import { errorHandler } from "../utils/error.js";
+import { logActivity } from "../utils/logActivity.js";
 
 // Get all items
 export const getItems = async (req, res, next) => {
@@ -28,6 +29,14 @@ export const addItem = async (req, res, next) => {
     });
 
     await newItem.save();
+
+    await logActivity(req.user.id, "added item", {
+      itemId: newItem._id,
+      name,
+      quantity,
+      price,
+    });
+
     res.status(201).json(newItem);
   } catch (error) {
     next(error);
@@ -47,6 +56,13 @@ export const updateItem = async (req, res, next) => {
 
     if (!updatedItem) return next(errorHandler(404, "Item not found!"));
 
+    await logActivity(req.user.id, "updated item", {
+      itemId: updatedItem._id,
+      name,
+      quantity,
+      price,
+    });
+
     res.status(200).json(updatedItem);
   } catch (error) {
     next(error);
@@ -58,6 +74,11 @@ export const deleteItem = async (req, res, next) => {
   try {
     const deletedItem = await Item.findByIdAndDelete(req.params.id);
     if (!deletedItem) return next(errorHandler(404, "Item not found!"));
+
+    await logActivity(req.user.id, "deleted item", {
+      itemId: deletedItem._id,
+      name: deletedItem.name,
+    });
 
     res.status(200).json({ message: "Item deleted successfully!" });
   } catch (error) {

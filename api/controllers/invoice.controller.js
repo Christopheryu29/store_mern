@@ -1,5 +1,6 @@
 import Invoice from "../models/invoice.model.js";
 import { errorHandler } from "../utils/error.js";
+import { logActivity } from "../utils/logActivity.js";
 
 // Create a new invoice
 export const createInvoice = async (req, res, next) => {
@@ -19,6 +20,13 @@ export const createInvoice = async (req, res, next) => {
     });
 
     await newInvoice.save();
+
+    await logActivity(req.user.id, "created invoice", {
+      invoiceId: newInvoice._id,
+      buyerName,
+      total,
+    });
+
     res.status(201).json({ message: "Invoice created!", invoice: newInvoice });
   } catch (error) {
     next(error);
@@ -32,7 +40,7 @@ export const getAllInvoices = async (req, res, next) => {
       return next(errorHandler(403, "Access denied"));
     }
 
-    const invoices = await Invoice.find().sort({ createdAt: -1 }); //sorted with the most recent first (-1 = descending)
+    const invoices = await Invoice.find().sort({ createdAt: -1 });
     res.status(200).json(invoices);
   } catch (error) {
     next(error);

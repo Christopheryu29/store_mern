@@ -7,7 +7,8 @@ import saleRouter from "./routes/sale.route.js";
 import itemRouter from "./routes/item.route.js";
 import invoiceRouter from "./routes/invoice.route.js";
 import financialRouter from "./routes/financial.route.js";
-
+import activityRoute from "./routes/activity.route.js";
+import refundRoute from "./routes/refund.route.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -37,7 +38,8 @@ app.use("/api/sale", saleRouter);
 app.use("/api/item", itemRouter);
 app.use("/api/invoice", invoiceRouter);
 app.use("/api/financial", financialRouter);
-
+app.use("/api/activity", activityRoute);
+app.use("/api/refund", refundRoute);
 app.get("/test", (req, res) => {
   res.send("Hello World!");
 });

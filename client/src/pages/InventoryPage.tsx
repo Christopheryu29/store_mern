@@ -151,7 +151,12 @@ export default function InventoryPage() {
                     item.name
                   )}
                 </TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{
+                    color: item.quantity < 5 ? "error.main" : "inherit",
+                    fontWeight: item.quantity < 5 ? "bold" : "normal",
+                  }}
+                >
                   {editItemId === item._id ? (
                     <TextField
                       type="number"
@@ -168,6 +173,7 @@ export default function InventoryPage() {
                     item.quantity
                   )}
                 </TableCell>
+
                 <TableCell>
                   {editItemId === item._id ? (
                     <TextField
