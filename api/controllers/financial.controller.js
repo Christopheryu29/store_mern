@@ -1,4 +1,5 @@
 import Invoice from "../models/invoice.model.js";
+import Expense from "../models/expense.model.js";
 import { errorHandler } from "../utils/error.js";
 
 export const getFinancialSummary = async (req, res, next) => {
@@ -43,11 +44,21 @@ export const getFinancialSummary = async (req, res, next) => {
       .sort((a, b) => b.totalRevenue - a.totalRevenue)
       .slice(0, 5); // Top 5 items
 
+    // Get expenses & debts this month
+    const monthlyExpenses = await Expense.find({
+      dueDate: { $gte: startOfMonth, $lte: today },
+    });
+
+    const totalExpenses = monthlyExpenses.reduce((sum, e) => sum + e.amount, 0);
+    const netProfit = monthlySales - totalExpenses;
+
     res.status(200).json({
       totalSales,
       dailySales,
       monthlySales,
       topItems,
+      totalExpenses,
+      netProfit,
     });
   } catch (error) {
     next(error);

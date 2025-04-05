@@ -70,6 +70,9 @@ export default function OwnerDashboard() {
           <Button variant="contained" onClick={() => navigate("/activity-log")}>
             View Activity Log
           </Button>
+          <Button variant="contained" onClick={() => navigate("/calendar")}>
+            Expense Calendar
+          </Button>
           <Button
             variant="contained"
             color="error"

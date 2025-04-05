@@ -9,6 +9,7 @@ import invoiceRouter from "./routes/invoice.route.js";
 import financialRouter from "./routes/financial.route.js";
 import activityRoute from "./routes/activity.route.js";
 import refundRoute from "./routes/refund.route.js";
+import expenseRoute from "./routes/expense.route.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -40,6 +41,7 @@ app.use("/api/invoice", invoiceRouter);
 app.use("/api/financial", financialRouter);
 app.use("/api/activity", activityRoute);
 app.use("/api/refund", refundRoute);
+app.use("/api/expense", expenseRoute);
 app.get("/test", (req, res) => {
   res.send("Hello World!");
 });

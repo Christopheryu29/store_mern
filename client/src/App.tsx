@@ -18,6 +18,7 @@ import FinancialSummaryPage from "./pages/FinancialSummaryPage";
 import ActivityLogPage from "./pages/ActivityLogPage";
 import RefundHistoryPage from "./pages/RefundHistoryPage";
 import RefundPage from "./pages/RefundPage";
+import ExpenseCalendarPage from "./pages/ExpenseCalendarPage";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="/activity-log" element={<ActivityLogPage />} />
           <Route path="/refund" element={<RefundPage />} />
           <Route path="/refund-history" element={<RefundHistoryPage />} />
+          <Route path="/calendar" element={<ExpenseCalendarPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
