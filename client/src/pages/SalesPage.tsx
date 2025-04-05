@@ -37,6 +37,7 @@ export default function SalesPage() {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [branding, setBranding] = useState<any>(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -46,6 +47,10 @@ export default function SalesPage() {
       fetch("/api/invoice/all", { credentials: "include" })
         .then((res) => res.json())
         .then((data) => setInvoices(data));
+
+      fetch("/api/settings", { credentials: "include" })
+        .then((res) => res.json())
+        .then(setBranding);
     }
   }, [currentUser, navigate]);
 
@@ -58,14 +63,24 @@ export default function SalesPage() {
   const handleDownloadPDF = (invoice: Invoice) => {
     const doc = new jsPDF();
 
-    doc.setFontSize(18);
-    doc.text("Invoice", 14, 20);
+    let y = 20;
+    if (branding) {
+      doc.setFontSize(14);
+      doc.text(branding.storeName || "Store Name", 14, y);
+      y += 7;
+      doc.setFontSize(11);
+      if (branding.address) doc.text(branding.address, 14, y);
+      y += 5;
+      if (branding.phone) doc.text(`Phone: ${branding.phone}`, 14, y);
+      y += 10;
+    }
+
     doc.setFontSize(12);
-    doc.text(`Buyer: ${invoice.buyerName}`, 14, 30);
-    doc.text(`Date: ${new Date(invoice.date).toLocaleString()}`, 14, 37);
+    doc.text(`Buyer: ${invoice.buyerName}`, 14, y);
+    doc.text(`Date: ${new Date(invoice.date).toLocaleString()}`, 14, y + 7);
 
     autoTable(doc, {
-      startY: 45,
+      startY: y + 15,
       head: [["Item", "Quantity", "Unit Price", "Subtotal"]],
       body: invoice.items.map((item) => [
         item.name,
@@ -77,7 +92,7 @@ export default function SalesPage() {
 
     const totalY =
       (doc as jsPDF & { lastAutoTable?: { finalY?: number } })?.lastAutoTable
-        ?.finalY ?? 100;
+        ?.finalY ?? y + 60;
 
     doc.text(`Total: $${invoice.total.toFixed(2)}`, 14, totalY + 10);
     doc.save(
@@ -93,6 +108,27 @@ export default function SalesPage() {
         <Typography variant="h4" fontWeight="bold" mb={3}>
           Sales Invoices
         </Typography>
+
+        {branding && (
+          <Box mb={3} textAlign="center">
+            {branding.logoUrl && (
+              <img
+                src={
+                  branding.logoUrl.startsWith("http")
+                    ? branding.logoUrl
+                    : `http://localhost:3000${branding.logoUrl}`
+                }
+                alt="Logo"
+                style={{ width: 80, marginBottom: 8 }}
+              />
+            )}
+            <Typography fontWeight="bold" fontSize={18}>
+              {branding.storeName}
+            </Typography>
+            <Typography>{branding.address}</Typography>
+            <Typography>{branding.phone}</Typography>
+          </Box>
+        )}
 
         <TextField
           label="Search Buyer"

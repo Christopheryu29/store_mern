@@ -80,6 +80,12 @@ export default function OwnerDashboard() {
           >
             View Refunds
           </Button>
+          <Button
+            variant="outlined"
+            onClick={() => navigate("/invoice-settings")}
+          >
+            Invoice Branding
+          </Button>
 
           <Button onClick={() => navigate("/refund")}>Issue Refund</Button>
         </Box>
