@@ -81,6 +81,13 @@ export default function OwnerDashboard() {
             View Refunds
           </Button>
           <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate("/customers")}
+          >
+            Customer History
+          </Button>
+          <Button
             variant="outlined"
             onClick={() => navigate("/invoice-settings")}
           >
