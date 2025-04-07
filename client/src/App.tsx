@@ -21,6 +21,7 @@ import RefundPage from "./pages/RefundPage";
 import ExpenseCalendarPage from "./pages/ExpenseCalendarPage";
 import InvoiceSettingsPage from "./pages/InvoiceSettingsPage";
 import CustomerProfilesPage from "./pages/CustomerProfilesPage";
+import RestockPage from "./pages/RestockPage";
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
           <Route path="/calendar" element={<ExpenseCalendarPage />} />
           <Route path="/invoice-settings" element={<InvoiceSettingsPage />} />
           <Route path="/customers" element={<CustomerProfilesPage />} />
+          <Route path="/restock" element={<RestockPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

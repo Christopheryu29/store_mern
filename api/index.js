@@ -13,6 +13,7 @@ import expenseRoute from "./routes/expense.route.js";
 import cookieParser from "cookie-parser";
 import customerRoute from "./routes/customer.route.js";
 import settingsRoute from "./routes/settings.route.js";
+import restockRoute from "./routes/restock.route.js";
 
 dotenv.config();
 mongoose
@@ -46,6 +47,7 @@ app.use("/api/refund", refundRoute);
 app.use("/api/expense", expenseRoute);
 app.use("/api/settings", settingsRoute);
 app.use("/api/customer", customerRoute);
+app.use("/api/restock", restockRoute);
 app.get("/test", (req, res) => {
   res.send("Hello World!");
 });

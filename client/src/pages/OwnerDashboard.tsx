@@ -88,6 +88,14 @@ export default function OwnerDashboard() {
             Customer History
           </Button>
           <Button
+            variant="contained"
+            color="error"
+            onClick={() => navigate("/restock")}
+          >
+            Restock Reminder
+          </Button>
+
+          <Button
             variant="outlined"
             onClick={() => navigate("/invoice-settings")}
           >
