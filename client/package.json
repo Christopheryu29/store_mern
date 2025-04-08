@@ -16,6 +16,7 @@
     "@mui/material": "^6.4.6",
     "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/vite": "^4.0.9",
+    "dayjs": "^1.11.13",
     "firebase": "^11.4.0",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",

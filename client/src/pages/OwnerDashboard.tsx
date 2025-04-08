@@ -1,15 +1,31 @@
+import {
+  Box,
+  Container,
+  Typography,
+  Grid,
+  Paper,
+  ButtonBase,
+} from "@mui/material";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
-import { Typography, Container, Box, Button } from "@mui/material";
+import {
+  Inventory2,
+  ReceiptLong,
+  Group,
+  Upload,
+  Paid,
+  Assignment,
+  CalendarMonth,
+  Restore,
+  History,
+  BrandingWatermark,
+} from "@mui/icons-material";
 
 export default function OwnerDashboard() {
-  const { currentUser } = useSelector((state: RootState) => state.user) as {
-    currentUser: { role: "owner" | "cashier" } | null;
-  };
-
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (!currentUser || currentUser.role !== "owner") {
@@ -17,94 +33,135 @@ export default function OwnerDashboard() {
     }
   }, [currentUser, navigate]);
 
-  if (!currentUser || currentUser.role !== "owner") {
-    return null;
-  }
+  if (!currentUser) return null;
 
   return (
-    <Container maxWidth="md">
-      <Box textAlign="center" mt={5}>
-        <Typography variant="h4" fontWeight="bold">
+    <Container maxWidth="lg">
+      <Box mt={5}>
+        <Typography variant="h4" fontWeight="bold" gutterBottom>
           Owner Dashboard
         </Typography>
-        <Typography variant="h6" color="textSecondary" mt={2}>
-          Manage inventory, sales, and staff permissions.
+        <Typography variant="subtitle1" color="textSecondary" mb={4}>
+          Manage your business operations, sales, staff, and financials.
         </Typography>
 
-        <Box mt={4} display="flex" flexDirection="column" gap={2}>
-          <Button
-            variant="contained"
-            color="primary"
+        <Grid container spacing={3}>
+          {/* Inventory & Sales */}
+          <DashboardTile
+            title="Manage Inventory"
+            icon={<Inventory2 fontSize="large" />}
             onClick={() => navigate("/inventory")}
-          >
-            Manage Inventory
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => navigate("/sales")}
-          >
-            View Sales Reports
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={() => navigate("/staff")}
-          >
-            Manage Staff
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
+          />
+          <DashboardTile
+            title="Checkout"
+            icon={<Upload fontSize="large" />}
             onClick={() => navigate("/checkout")}
-          >
-            CheckOut Page
-          </Button>
-          <Button
-            variant="contained"
-            color="warning"
-            onClick={() => navigate("/financial-summary")}
-          >
-            Owner Summary
-          </Button>
-          <Button variant="contained" onClick={() => navigate("/activity-log")}>
-            View Activity Log
-          </Button>
-          <Button variant="contained" onClick={() => navigate("/calendar")}>
-            Expense Calendar
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => navigate("/refund-history")}
-          >
-            View Refunds
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={() => navigate("/customers")}
-          >
-            Customer History
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
+          />
+          <DashboardTile
+            title="Sales Reports"
+            icon={<ReceiptLong fontSize="large" />}
+            onClick={() => navigate("/sales")}
+          />
+          <DashboardTile
+            title="Restock Reminder"
+            icon={<Restore fontSize="large" />}
             onClick={() => navigate("/restock")}
-          >
-            Restock Reminder
-          </Button>
+          />
 
-          <Button
-            variant="outlined"
+          {/* Staff & Customers */}
+          <DashboardTile
+            title="Manage Staff"
+            icon={<Group fontSize="large" />}
+            onClick={() => navigate("/staff")}
+          />
+          <DashboardTile
+            title="Customer Profiles"
+            icon={<History fontSize="large" />}
+            onClick={() => navigate("/customers")}
+          />
+
+          {/* Financial & Admin */}
+          <DashboardTile
+            title="Financial Summary"
+            icon={<Paid fontSize="large" />}
+            onClick={() => navigate("/financial-summary")}
+          />
+          <DashboardTile
+            title="Expense Calendar"
+            icon={<CalendarMonth fontSize="large" />}
+            onClick={() => navigate("/calendar")}
+          />
+          <DashboardTile
+            title="Activity Log"
+            icon={<Assignment fontSize="large" />}
+            onClick={() => navigate("/activity-log")}
+          />
+
+          {/* Refunds & Branding */}
+          <DashboardTile
+            title="Refund History"
+            icon={<Restore fontSize="large" />}
+            onClick={() => navigate("/refund-history")}
+          />
+          <DashboardTile
+            title="Issue Refund"
+            icon={<Restore fontSize="large" />}
+            onClick={() => navigate("/refund")}
+          />
+          <DashboardTile
+            title="Invoice Branding"
+            icon={<BrandingWatermark fontSize="large" />}
             onClick={() => navigate("/invoice-settings")}
-          >
-            Invoice Branding
-          </Button>
-
-          <Button onClick={() => navigate("/refund")}>Issue Refund</Button>
-        </Box>
+          />
+        </Grid>
       </Box>
     </Container>
+  );
+}
+
+interface TileProps {
+  title: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}
+
+function DashboardTile({ title, icon, onClick }: TileProps) {
+  return (
+    <Grid item xs={12} sm={6} md={4}>
+      <ButtonBase
+        onClick={onClick}
+        sx={{
+          width: "100%",
+          height: "100%",
+          borderRadius: 2,
+        }}
+      >
+        <Paper
+          elevation={4}
+          sx={{
+            width: "100%",
+            p: 3,
+            borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "0.3s ease",
+            height: 140,
+            "&:hover": {
+              boxShadow: 6,
+              transform: "scale(1.02)",
+              backgroundColor: "#f9f9f9",
+            },
+          }}
+        >
+          {icon}
+          <Typography fontWeight="bold" textAlign="center">
+            {title}
+          </Typography>
+        </Paper>
+      </ButtonBase>
+    </Grid>
   );
 }

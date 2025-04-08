@@ -4,15 +4,12 @@ import {
   Container,
   Typography,
   TextField,
-  MenuItem,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  Alert,
   CircularProgress,
+  Paper,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import { Autocomplete } from "@mui/material";
 
 interface Item {
   _id: string;
@@ -23,95 +20,128 @@ interface Item {
 
 export default function RefundPage() {
   const [items, setItems] = useState<Item[]>([]);
-  const [selectedItem, setSelectedItem] = useState<string>("");
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [reason, setReason] = useState<string>("");
-  const [message, setMessage] = useState<string>("");
+  const [message, setMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch("/api/item", { credentials: "include" })
       .then((res) => res.json())
-      .then((data) => setItems(data));
+      .then((data) => setItems(data))
+      .catch(() =>
+        setMessage({ type: "error", text: "Failed to fetch items." })
+      );
   }, []);
 
   const handleSubmit = async () => {
-    if (!selectedItem || !quantity || !reason) {
-      setMessage("Please fill in all fields.");
+    if (!selectedItem || quantity < 1 || !reason) {
+      setMessage({
+        type: "error",
+        text: "Please fill in all fields correctly.",
+      });
       return;
     }
 
+    if (quantity > selectedItem.quantity) {
+      setMessage({
+        type: "error",
+        text: "Returned quantity exceeds current stock.",
+      });
+      return;
+    }
+
+    setLoading(true);
     const res = await fetch("/api/refund", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
-        itemId: selectedItem,
+        itemId: selectedItem._id,
         quantity,
         reason,
       }),
     });
 
+    const result = await res.json();
+    setLoading(false);
+
     if (res.ok) {
-      setMessage("Refund submitted successfully.");
-      setSelectedItem("");
+      setMessage({ type: "success", text: "Refund submitted successfully." });
+      setSelectedItem(null);
       setQuantity(1);
       setReason("");
     } else {
-      const err = await res.json();
-      setMessage(`Error: ${err.message}`);
+      setMessage({ type: "error", text: result.message || "Refund failed." });
     }
   };
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="sm">
       <Box mt={5}>
-        <Typography variant="h4" fontWeight="bold" textAlign="center">
+        <Typography variant="h4" fontWeight="bold" textAlign="center" mb={3}>
           Return & Refund
         </Typography>
 
-        <Box mt={3} display="flex" flexDirection="column" gap={2}>
-          <TextField
-            select
-            label="Select Item"
-            value={selectedItem}
-            onChange={(e) => setSelectedItem(e.target.value)}
-            fullWidth
-          >
-            {items.map((item) => (
-              <MenuItem key={item._id} value={item._id}>
-                {item.name} (${item.price})
-              </MenuItem>
-            ))}
-          </TextField>
+        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+          <Box display="flex" flexDirection="column" gap={2}>
+            <Autocomplete
+              options={items}
+              getOptionLabel={(option) =>
+                `${option.name} - $${option.price} (In Stock: ${option.quantity})`
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="Search & Select Item" />
+              )}
+              value={selectedItem}
+              onChange={(_, value) => setSelectedItem(value)}
+              fullWidth
+            />
 
-          <TextField
-            label="Quantity Returned"
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            inputProps={{ min: 1 }}
-            fullWidth
-          />
+            <TextField
+              label="Quantity Returned"
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              inputProps={{
+                min: 1,
+                max: selectedItem?.quantity || 100,
+              }}
+              disabled={!selectedItem}
+              fullWidth
+            />
 
-          <TextField
-            label="Reason for Return"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            multiline
-            rows={3}
-            fullWidth
-          />
+            <TextField
+              label="Reason for Return"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              multiline
+              rows={3}
+              fullWidth
+            />
 
-          <Button variant="contained" color="warning" onClick={handleSubmit}>
-            Submit Refund
-          </Button>
+            {selectedItem && (
+              <Typography variant="body2" color="textSecondary">
+                Refund Amount: ${selectedItem.price * quantity}
+              </Typography>
+            )}
 
-          {message && (
-            <Typography mt={2} color="primary">
-              {message}
-            </Typography>
-          )}
-        </Box>
+            <Button
+              variant="contained"
+              color="warning"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : "Submit Refund"}
+            </Button>
+
+            {message && <Alert severity={message.type}>{message.text}</Alert>}
+          </Box>
+        </Paper>
       </Box>
     </Container>
   );
