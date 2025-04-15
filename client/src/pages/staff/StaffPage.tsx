@@ -17,7 +17,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 
 interface Staff {
   _id: string;

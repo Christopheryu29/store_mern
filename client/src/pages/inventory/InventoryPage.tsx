@@ -13,7 +13,7 @@ import {
   TableCell,
   TextField,
 } from "@mui/material";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 
 interface Item {
   _id: string;

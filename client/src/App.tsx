@@ -9,10 +9,10 @@ import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./pages/Profile";
 import PrivateOwnerRoute from "./pages/PrivateOwnerRoute";
 import OwnerDashboard from "./pages/OwnerDashboard";
-import InventoryPage from "./pages/InventoryPage";
-import SalesPage from "./pages/SalesPage";
-import StaffPage from "./pages/StaffPage";
-import CheckoutPage from "./pages/CheckoutPage";
+import InventoryPage from "./pages/inventory/InventoryPage";
+import SalesPage from "./pages/sales/SalesPage";
+import StaffPage from "./pages/staff/StaffPage";
+import CheckoutPage from "./pages/checkout/CheckoutPage";
 import InvoicePage from "./pages/InvoicePage";
 import FinancialSummaryPage from "./pages/FinancialSummaryPage";
 import ActivityLogPage from "./pages/ActivityLogPage";
@@ -21,7 +21,7 @@ import RefundPage from "./pages/RefundPage";
 import ExpenseCalendarPage from "./pages/ExpenseCalendarPage";
 import InvoiceSettingsPage from "./pages/InvoiceSettingsPage";
 import CustomerProfilesPage from "./pages/CustomerProfilesPage";
-import RestockPage from "./pages/RestockPage";
+import RestockPage from "./pages/restock/RestockPage";
 
 export default function App() {
   return (

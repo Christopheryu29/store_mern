@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { RootState } from "../redux/store";
+import { RootState } from "../../redux/store";
 
 interface InvoiceItem {
   name: string;
@@ -33,11 +33,18 @@ interface Invoice {
   total: number;
 }
 
+interface Branding {
+  storeName: string;
+  address: string;
+  phone: string;
+  logoUrl: string;
+}
+
 export default function SalesPage() {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [branding, setBranding] = useState<any>(null);
+  const [branding, setBranding] = useState<Branding | null>(null);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
