@@ -14,13 +14,13 @@ import SalesPage from "./pages/sales/SalesPage";
 import StaffPage from "./pages/staff/StaffPage";
 import CheckoutPage from "./pages/checkout/CheckoutPage";
 import InvoicePage from "./pages/InvoicePage";
-import FinancialSummaryPage from "./pages/FinancialSummaryPage";
-import ActivityLogPage from "./pages/ActivityLogPage";
-import RefundHistoryPage from "./pages/RefundHistoryPage";
-import RefundPage from "./pages/RefundPage";
-import ExpenseCalendarPage from "./pages/ExpenseCalendarPage";
-import InvoiceSettingsPage from "./pages/InvoiceSettingsPage";
-import CustomerProfilesPage from "./pages/CustomerProfilesPage";
+import FinancialSummaryPage from "./pages/financial-summary/FinancialSummaryPage";
+import ActivityLogPage from "./pages/activity-log/ActivityLogPage";
+import RefundHistoryPage from "./pages/refund-history/RefundHistoryPage";
+import RefundPage from "./pages/refund/RefundPage";
+import ExpenseCalendarPage from "./pages/calendar/ExpenseCalendarPage";
+import InvoiceSettingsPage from "./pages/invoice-settings/InvoiceSettingsPage";
+import CustomerProfilesPage from "./pages/customers/CustomerProfilesPage";
 import RestockPage from "./pages/restock/RestockPage";
 
 export default function App() {
